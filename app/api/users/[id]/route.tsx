@@ -1,5 +1,6 @@
 import { error } from "console";
 import { NextRequest, NextResponse } from "next/server";
+import schema from "../schema";
 
 export function GET(
     request: NextRequest,
@@ -13,19 +14,20 @@ export function GET(
 
 export async function POST(request: NextRequest, response: NextResponse) {
     const body = await request.json();
-    if (!body.name)
-        return NextResponse.json({ message: "Name is required" });
+    const validation = schema.safeParse(body);
+    if (validation.error)
+        return NextResponse.json({ message: validation.error.errors });
     return NextResponse.json({ message: "OK", data: body });
 }
 
 export async function PUT(request: NextRequest, { params }: { params: { id: number } }) {
     //validate request body
     const body = await request.json();
-
-    // if invalid return 400
-    if (!body.name) {
-        return NextResponse.json({ error: "Name is required" });
+    const validation = schema.safeParse(body);
+    if (!validation.success) {
+        return NextResponse.json({ error: validation.error.errors });
     }
+
 
     // fetch the given user
     if (params.id > 10) {
