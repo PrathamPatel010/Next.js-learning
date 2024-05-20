@@ -36,3 +36,6 @@ yarn-error.log*
 next-env.d.ts
 
 .env
+
+id_rsa_personal
+id_rsa_personal.pub
